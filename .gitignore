@@ -1,5 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+swmm/__pycache__/
+swmm/rainfall/__pycache__/
 *.py[codz]
 *$py.class
 
@@ -7,6 +9,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+output/
 .Python
 build/
 develop-eggs/
