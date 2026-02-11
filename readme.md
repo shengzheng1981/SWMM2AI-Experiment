@@ -57,7 +57,7 @@ python predict.py
 ```
 
 ## Future Work
-1. Introduce more advanced time series models (e.g., Transformer, TCN, Informer) for comparison
+1. Introduce more advanced time series models (e.g., Transformer) for comparison
 2. Explore the impact of multi-variable inputs (e.g., flow at multiple nodes, antecedent soil moisture) on model performance
 3. Investigate the generalization capability of models under extreme rainfall events or different urban underlying surface conditions
 
