@@ -66,7 +66,7 @@ def example_usage():
         max_duration=6,
         rain_type='chicago'
     )
-    plot_4events(events[0],events[1],events[2],events[3])
+    plot_4events(events)
     plt.show()
     print(f"生成了 {len(events)} 个降雨事件")
     
@@ -83,7 +83,13 @@ def example_usage():
     
     return
 
-def plot_4events(event1, event2, event3, event4):
+def plot_4events(events):
+    if len(events) != 4:
+        return
+    event1 = events[0] 
+    event2 = events[1]
+    event3 = events[2]
+    event4 = events[3]
     seq_length = len(event1.data)
     time_step_min = 5
     time_hours = np.arange(seq_length) * time_step_min / 60
@@ -133,6 +139,7 @@ def plot_4events(event1, event2, event3, event4):
     # 添加标题
     ax4.set_title("Rainfall Event 4", fontsize=14, fontweight='bold')
     plt.tight_layout()
+    return 
 
 
 if __name__ == "__main__":

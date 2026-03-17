@@ -22,7 +22,7 @@ class Trainer:
         self.model_params = model_params
         self.model_path = model_path
 
-    def train(self, n_events=100, seq_length=288, time_step_min=5, epochs=200, lr=0.001):
+    def train(self, n_events=100, seq_length=288, time_step_min=5, swmm_simulator=None, epochs=200, lr=0.001):
         """主程序：训练模型"""
         print("=== 水位预测模型训练 ===")
         print(f"序列长度: {seq_length} 个时间步 ({seq_length * time_step_min/60:.1f}小时)")
@@ -33,7 +33,8 @@ class Trainer:
         dataset = SWMMDataset(
             n_events=n_events,
             seq_length=seq_length,
-            time_step_min=time_step_min
+            time_step_min=time_step_min,
+            swmm_simulator=swmm_simulator
         )
         
         # 划分数据集
@@ -461,7 +462,7 @@ class Predictor:
         ax2.set_xlabel('时间 (小时)')
         ax2.set_ylabel('水位 (m)')
         ax2.set_title('水位对比: '+self.model_type+'预测 vs SWMM模拟')
-        ax2.legend(loc='best')
+        ax2.legend(loc='upper right')
         ax2.grid(True, alpha=0.3)
         
         # 添加水位统计信息
@@ -500,7 +501,7 @@ class Predictor:
         # 合并图例
         lines1, labels1 = ax3.get_legend_handles_labels()
         lines2, labels2 = ax3_rain.get_legend_handles_labels()
-        ax3.legend(lines1 + lines2, labels1 + labels2, loc='upper left')
+        ax3.legend(lines1 + lines2, labels1 + labels2, loc='upper right')
         
         # ==================== 子图4: 误差分析 ====================
         ax4 = axes[1, 1]
@@ -531,7 +532,7 @@ class Predictor:
             # 合并误差图例
             lines_err1, labels_err1 = ax4.get_legend_handles_labels()
             lines_err2, labels_err2 = ax4_rel.get_legend_handles_labels()
-            ax4.legend(lines_err1 + lines_err2, labels_err1 + labels_err2, loc='upper left')
+            ax4.legend(lines_err1 + lines_err2, labels_err1 + labels_err2, loc='upper right')
             
             # 计算并显示误差统计
             mse = np.mean((water_predicted - swmm_water_sequence) ** 2)

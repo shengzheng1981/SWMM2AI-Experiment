@@ -1,13 +1,10 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from mlp import SimpleMLP
-from lstm import SimpleLSTM, MultiScaleLSTM
+
+from lstm import SimpleLSTM
 from gru import SimpleGRU
 from attention import AttentionLSTM, CausalAttentionLSTM
-from residual import ResidualLSTM
-from seq2seq import Seq2SeqLSTM
-# from transformer import Transformer
 
 from model import Predictor
 from swmm.rainfall.generator import RainfallGenerator  
@@ -20,90 +17,90 @@ def test_single_prediction():
     output_dir = create_next_folder(base_path='output')
 
     # 1. 加载预测器
-    predictor = Predictor(model_path='simple_mlp_model.pth', output_dir=output_dir)
+    predictor = Predictor(model_path='simple_lstm_model.pth', output_dir=output_dir)
     
     # 2. 生成测试降雨序列
-    # rg = RainfallGenerator(time_step_min=5)
+    rg = RainfallGenerator(time_step_min=5)
     
-    # test_rainfall = rg.generate_random_rainfall_event(
-    #     seq_length=288,  # 必须与训练时相同的长度
-    #     min_duration=2,
-    #     max_duration=4,
-    #     rain_type='chicago'
-    # )
+    test_rainfall = rg.generate_random_rainfall_event(
+        seq_length=288,  # 必须与训练时相同的长度
+        min_duration=2,
+        max_duration=4,
+        rain_type='chicago'
+    )
 
-    rainfall_event = [2.4000000000000004
-        ,2.4000000000000004
-        ,0
-        ,2.4000000000000004
-        ,0
-        ,0
-        ,0
-        ,0
-        ,0
-        ,0
-        ,0
-        ,0
-        ,2.4000000000000004
-        ,0
-        ,2.4000000000000004
-        ,0
-        ,2.4000000000000004
-        ,0
-        ,2.4000000000000004
-        ,0
-        ,7.199999999999999
-        ,4.800000000000001
-        ,9.600000000000001
-        ,2.4000000000000004
-        ,2.4000000000000004
-        ,4.800000000000001
-        ,4.800000000000001
-        ,4.800000000000001
-        ,2.4000000000000004
-        ,0
-        ,0
-        ,2.4000000000000004
-        ,0
-        ,0
-        ,0
-        ,0
-        ,0
-        ,7.199999999999999
-        ,2.4000000000000004
-        ,0
-        ,0
-        ,0
-        ,0
-        ,4.800000000000001
-        ,9.600000000000001
-        ,4.800000000000001
-        ,4.800000000000001
-        ,24
-        ,0
-        ,7.199999999999999
-        ,7.199999999999999
-        ,4.800000000000001
-        ,2.4000000000000004
-        ,0
-        ,0
-        ,0
-        ,2.4000000000000004
-        ,0
-        ,0
-        ,0
-        ,0
-        ,4.800000000000001
-        ,9.600000000000001
-        ,2.4000000000000004
-        ,7.199999999999999
-    ]
+    # rainfall_event = [2.4000000000000004
+    #     ,2.4000000000000004
+    #     ,0
+    #     ,2.4000000000000004
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,2.4000000000000004
+    #     ,0
+    #     ,2.4000000000000004
+    #     ,0
+    #     ,2.4000000000000004
+    #     ,0
+    #     ,2.4000000000000004
+    #     ,0
+    #     ,7.199999999999999
+    #     ,4.800000000000001
+    #     ,9.600000000000001
+    #     ,2.4000000000000004
+    #     ,2.4000000000000004
+    #     ,4.800000000000001
+    #     ,4.800000000000001
+    #     ,4.800000000000001
+    #     ,2.4000000000000004
+    #     ,0
+    #     ,0
+    #     ,2.4000000000000004
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,7.199999999999999
+    #     ,2.4000000000000004
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,4.800000000000001
+    #     ,9.600000000000001
+    #     ,4.800000000000001
+    #     ,4.800000000000001
+    #     ,24
+    #     ,0
+    #     ,7.199999999999999
+    #     ,7.199999999999999
+    #     ,4.800000000000001
+    #     ,2.4000000000000004
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,2.4000000000000004
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,0
+    #     ,4.800000000000001
+    #     ,9.600000000000001
+    #     ,2.4000000000000004
+    #     ,7.199999999999999
+    # ]
 
-    test_rainfall = np.zeros(288)
-    # 随机选择降雨开始时间，留足1小时用于排水峰延
-    start_idx = np.random.randint(0, 288 - len(rainfall_event) - 12)
-    end_idx = start_idx + len(rainfall_event)
-    test_rainfall[start_idx:end_idx] = rainfall_event
+    # test_rainfall = np.zeros(288)
+    # # 随机选择降雨开始时间，留足1小时用于排水峰延
+    # start_idx = np.random.randint(0, 288 - len(rainfall_event) - 12)
+    # end_idx = start_idx + len(rainfall_event)
+    # test_rainfall[start_idx:end_idx] = rainfall_event
 
     
     print(f"测试降雨序列长度: {len(test_rainfall)}")
@@ -224,7 +221,7 @@ def compare_multiple_prediction():
     ]
 
     test_rainfall = np.zeros(288)
-    # 随机选择降雨开始时间，留足1小时用于排水峰延
+    # # 随机选择降雨开始时间，留足1小时用于排水峰延
     start_idx = np.random.randint(0, 288 - len(rainfall_event) - 12)
     end_idx = start_idx + len(rainfall_event)
     test_rainfall[start_idx:end_idx] = rainfall_event
@@ -244,6 +241,14 @@ def compare_multiple_prediction():
     # 4. 预测水位
     predicted_water_dict = {}
     predicted_stats_dict = {}
+    model_array = []
+    mse_array = []
+    rmse_array = []
+    mae_array = []
+    mape_array = []
+    pae_array = []
+    pre_array = []
+    nse_array = []
     for predictor in predictors:
         water_predicted = predictor.predict(test_rainfall)
         predicted_water_dict[predictor.model_type] = water_predicted
@@ -259,22 +264,51 @@ def compare_multiple_prediction():
         max_abs_error = np.max(absolute_error)
         max_rel_error = np.max(relative_error[swmm_water_sequence > 0])
         
-        # R²计算
+        # NSE计算
         ss_res = np.sum((swmm_water_sequence - water_predicted) ** 2)
         ss_tot = np.sum((swmm_water_sequence - np.mean(swmm_water_sequence)) ** 2)
-        r2 = 1 - (ss_res / (ss_tot + 1e-10))
+        nse = 1 - (ss_res / (ss_tot + 1e-10))
+        model_array.append(predictor.model_type)
+        mse_array.append(mse)
+        rmse_array.append(rmse)
+        mae_array.append(mae)
+        mape_array.append(mape)
+        pae_array.append(max_abs_error)
+        pre_array.append(max_rel_error)
+        nse_array.append(nse)
         
         predicted_stats_dict[predictor.model_type] = (f"{predictor.model_type}\n"
-            f"均方误差 (MSE): {mse:.4f}\n"
-            f"均方根误差 (RMSE): {rmse:.4f}\n"
-            f"平均绝对误差 (MAE): {mae:.4f}\n"
-            f"平均绝对百分比误差 (MAPE): {mape:.2f}%\n"
-            f"最大绝对误差: {max_abs_error:.4f}\n"
-            f"最大相对误差: {max_rel_error:.2f}%\n"
-            f"R²分数: {r2:.4f}")
+            f"MSE: {mse:.4f}\n"
+            f"RMSE: {rmse:.4f}\n"
+            f"MAE: {mae:.4f}\n"
+            f"MAPE: {mape:.2f}%\n"
+            f"PAE: {max_abs_error:.4f}\n"
+            f"PRE: {max_rel_error:.2f}%\n"
+            f"NSE: {nse:.4f}")
+    # 创建数据
+    # 创建结构化数组，每列可以有不同的数据类型
+    data = np.empty(len(model_array), dtype=[
+        ('Model', object),  # 字符串类型
+        ('MSE', float),
+        ('RMSE', float),
+        ('PAE', float),
+        ('NSE', float)
+    ])
 
+    # 填充数据
+    data['Model'] = model_array
+    data['MSE'] = mse_array
+    data['RMSE'] = rmse_array
+    data['PAE'] = pae_array
+    data['NSE'] = nse_array
+    # data = np.column_stack([np.array(model_array), np.array(mse_array), np.array(rmse_array), np.array(pae_array), np.array(nse_array)])
+    filename = create_next_file("output")
+    # 保存为CSV
+    np.savetxt(filename, data, delimiter=',',
+                header='Model,MSE,RMSE,PAE,NSE',
+                fmt='%s,%.4f,%.4f,%.4f,%.4f')
     # 5. 可视化对比
-    fig = compare(
+    fig = compare_plot4(
         rainfall_sequence=test_rainfall,
         swmm_water_sequence=swmm_water_sequence,
         predicted_water_dict=predicted_water_dict,
@@ -294,34 +328,43 @@ def create_next_folder(base_path=".", prefix="scenario"):
     os.makedirs(os.path.join(base_path, f"{prefix}_{i}"))
     return os.path.join(base_path, f"{prefix}_{i}")
 
-def compare(rainfall_sequence, swmm_water_sequence, predicted_water_dict, predicted_stats_dict):
-    seq_length = 288
+def create_next_file(base_path=".", prefix="compare", ext="csv"):
+    """
+    最简单的创建下一个编号文件夹
+    """
+    i = 1
+    while os.path.exists(os.path.join(base_path, f"{prefix}_{i}.{ext}")):
+        i += 1
+    return os.path.join(base_path, f"{prefix}_{i}.{ext}")
+
+def compare_plot(rainfall_sequence, swmm_water_sequence, predicted_water_dict, predicted_stats_dict):
+    seq_length = len(rainfall_sequence)
     time_step_min = 5
     time_hours = np.arange(seq_length) * time_step_min / 60
     fig, ax = plt.subplots(figsize=(16, 10))
     # 绘制降雨（次坐标轴）
     ax_rain = ax.twinx()
     ax_rain.bar(time_hours, rainfall_sequence, width=time_step_min/60/1.5,
-                      alpha=0.3, color='blue', label='降雨强度')
-    ax_rain.set_ylabel('降雨强度 (mm/h)', color='blue')
+                      alpha=0.3, color='blue', label='Intensity')
+    ax_rain.set_ylabel('Intensity (mm/h)', color='blue')
     ax_rain.tick_params(axis='y', labelcolor='blue')
     
     ax.set_prop_cycle(color=['#f27970', '#54b345', '#8983bf', '#c76da2'])
     # 绘制水位
     for key, value in predicted_water_dict.items():
-        ax.plot(time_hours, value, linewidth=2, label=key+'预测水位')
+        ax.plot(time_hours, value, linewidth=2, label=key)
 
     for index, (key, value) in enumerate(predicted_stats_dict.items()):
         ax.text(0.02 + 0.15*index, 0.98, value, transform=ax.transAxes,
-                    verticalalignment='top', fontsize=9,
+                    verticalalignment='top', fontsize=12,
                     bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.5))
     
-    ax.plot(time_hours, swmm_water_sequence, color='#05b9e2', linestyle='--', linewidth=2, label='SWMM模拟水位')
+    ax.plot(time_hours, swmm_water_sequence, color='#05b9e2', linestyle='--', linewidth=2, label='SWMM Results')
 
-    ax.set_xlabel('时间 (小时)')
-    ax.set_ylabel('水位 (m)', color='red')
+    ax.set_xlabel('Time (h)')
+    ax.set_ylabel('Depth (m)', color='red')
     ax.tick_params(axis='y', labelcolor='red')
-    ax.set_title('降雨与水位响应关系')
+    # ax.set_title('降雨与水位响应关系')
     ax.grid(True, alpha=0.3)
 
 
@@ -329,7 +372,46 @@ def compare(rainfall_sequence, swmm_water_sequence, predicted_water_dict, predic
     lines1, labels1 = ax.get_legend_handles_labels()
     lines2, labels2 = ax_rain.get_legend_handles_labels()
     ax.legend(lines1 + lines2, labels1 + labels2, loc='upper right')
-    fig.suptitle('多模型水位预测与SWMM模拟对比分析', fontsize=14, fontweight='bold', y=0.98)
+    # fig.suptitle('多模型水位预测与SWMM模拟对比分析', fontsize=14, fontweight='bold', y=0.98)
+    plt.tight_layout()
+    return fig
+
+def compare_plot4(rainfall_sequence, swmm_water_sequence, predicted_water_dict, predicted_stats_dict):
+    if len(predicted_water_dict.items()) != 4:
+        return
+    seq_length = len(rainfall_sequence)
+    time_step_min = 5
+    time_hours = np.arange(seq_length) * time_step_min / 60
+    fig, axes = plt.subplots(2,2,figsize=(16, 10))
+    colors=['#f27970', '#54b345', '#8983bf', '#c76da2']
+    for i, ax in enumerate(axes.flat):
+        # 绘制降雨（次坐标轴）
+        ax_rain = ax.twinx()
+        ax_rain.bar(time_hours, rainfall_sequence, width=time_step_min/60/1.5,
+                          alpha=0.3, color='blue', label='Intensity')
+        ax_rain.set_ylabel('Intensity (mm/h)', color='blue')
+        ax_rain.tick_params(axis='y', labelcolor='blue')
+        model_type = list(predicted_water_dict.keys())[i]
+        model_results = list(predicted_water_dict.values())[i]
+        model_stats = list(predicted_stats_dict.values())[i] 
+        ax.plot(time_hours, model_results, color=colors[i], linewidth=2, label=model_type)
+
+        ax.text(0.02, 0.98, model_stats, transform=ax.transAxes,
+                    verticalalignment='top', fontsize=14,
+                    bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.5))
+    
+        ax.plot(time_hours, swmm_water_sequence, color='#05b9e2', linestyle='--', linewidth=2, label='SWMM Results')
+
+        ax.set_xlabel('Time (h)')
+        ax.set_ylabel('Depth (m)', color='red')
+        ax.tick_params(axis='y', labelcolor='red')
+        ax.set_title(model_type)
+        ax.grid(True, alpha=0.3)
+        # 合并图例
+        lines1, labels1 = ax.get_legend_handles_labels()
+        lines2, labels2 = ax_rain.get_legend_handles_labels()
+        ax.legend(lines1 + lines2, labels1 + labels2, loc='upper right', fontsize=12)
+    # fig.suptitle('多模型水位预测与SWMM模拟对比分析', fontsize=14, fontweight='bold', y=0.98)
     plt.tight_layout()
     return fig
 
@@ -337,13 +419,15 @@ if __name__ == "__main__":
     # 设置中文字体
     plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei']
     plt.rcParams['axes.unicode_minus'] = False
-    
+    plt.rcParams['font.size'] = 12
     """主函数：运行所有示例"""
     print("水位预测模型 - 使用示例")
     print("=" * 50)
     
     try:
-        # 示例1：单个序列预测
+        # 示例1：单个模型预测
+        # test_single_prediction()
+        # 示例2：多个模型预测对比
         compare_multiple_prediction()
         
     except FileNotFoundError as e:

@@ -7,7 +7,6 @@ import tempfile
 from typing import List, Dict, Tuple, Optional
 from swmm_api import SwmmInput, SwmmOutput, SwmmReport, read_inp_file, read_out_file
 from swmm_api.input_file.sections import RainGage, Timeseries, TimeseriesData
-from .rainfall.generator import RainfallGenerator
 
 class SWMMSimulator:
     """
@@ -210,12 +209,12 @@ class SWMMSimulator:
             
             # 获取节点结果
             results = {}
-            data = out.get_part(self.output_type, self.output_element, self.output_variable)
+            data = out.get_part(kind=self.output_type, label=self.output_element, variable=self.output_variable)
             
             # 转换为numpy数组
             timestamps = data.index
-            values = data.values.flatten()
-            
+            # values = data.values.flatten()
+            values = data.values
             # 转换为字典格式
             results = {
                 'timestamps': timestamps,
