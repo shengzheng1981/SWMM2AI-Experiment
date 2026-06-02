@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from lstm import SimpleLSTM
 from gru import SimpleGRU
 from attention import AttentionLSTM, CausalAttentionLSTM
-
+from pinn import PINNLSTM
 from model import Predictor
 from swmm.rainfall.generator import RainfallGenerator  
 from swmm.simulator import SWMMSimulator
@@ -17,7 +17,7 @@ def test_single_prediction():
     output_dir = create_next_folder(base_path='output')
 
     # 1. 加载预测器
-    predictor = Predictor(model_path='simple_lstm_model.pth', output_dir=output_dir)
+    predictor = Predictor(model_path='pinn_lstm_model.pth', output_dir=output_dir)
     
     # 2. 生成测试降雨序列
     rg = RainfallGenerator(time_step_min=5)
@@ -132,14 +132,14 @@ def test_single_prediction():
     return
 
 def compare_multiple_prediction():
-    """单个序列预测示例"""
-    print("=== 单个序列预测示例 ===")
+    """多个模型预测对比示例"""
+    print("=== 多个模型预测对比示例 ===")
     # 0. 创建输出目录
     output_dir = create_next_folder(base_path='output')
 
     # 1. 加载预测器
     models = ['simple_lstm_model.pth', 'simple_gru_model.pth', 
-              'simple_attention_lstm_model.pth', 'causal_attention_lstm_model.pth']
+              'pinn_lstm_model.pth', 'causal_attention_lstm_model.pth']
     predictors = []
     for model_path in models:
         predictors.append(Predictor(model_path=model_path, output_dir=output_dir))
